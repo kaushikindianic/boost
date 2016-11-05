@@ -1,0 +1,24 @@
+{
+    "name": "linkorb/boost",
+    "description": "PHP Utils for ninjas, warlocks and code-monkeys",
+    "keywords": ["php", "accessors", "ninja", "warlock", "code-monkey", "magic", "linkorb"],
+    "license": "MIT",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Joost Faassen",
+            "email": "j.faassen@linkorb.com",
+            "homepage": "http://www.linkorb.com",
+            "role": "Developer"
+        }
+    ],
+    "support": {
+        "e-mail": "support@linkorb.com",
+        "issues": "https://github.com/linkorb/boost/issues"
+    },
+    "autoload": {
+        "psr-4": {
+            "Boost\\": "src/"
+        }
+    }
+}
