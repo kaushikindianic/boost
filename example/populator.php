@@ -2,10 +2,13 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
+use Boost\Constructor\ProtectedConstructorTrait;
 class Person
 {
     protected $firstname;
     protected $lastname;
+    
+    use ProtectedConstructorTrait;
     
     public function helloWorld()
     {
@@ -14,8 +17,10 @@ class Person
 }
 
 
-$person = new Person();
+$person = new Person('Jim');
 $populator = new \Boost\Populator\ProtectedPopulator();
+echo $person->helloWorld() . "\n";
+
 
 $populator->populate($person, ['firstname' => 'John', 'lastname' => 'Johnson']);
 
