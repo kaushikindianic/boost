@@ -12,16 +12,17 @@ class ProtectedPopulator
     {
         $reflectionObject = new ReflectionObject($obj);
         foreach ($data as $key => $value) {
-            if (!$reflectionObject->hasProperty($key)) {
-                throw new SerializerException("No such property: `" . $key . '`');
+            // simple conversion from snake case to all-lowercase
+            // this works because has and getProperty are both case insensitive
+            $name = str_replace('_', '', $key);
+            
+            if ($reflectionObject->hasProperty($name)) {
+                $p = $reflectionObject->getProperty($name);
+                if ($p->isProtected()) {
+                    $p->setAccessible(true);
+                    $p->setValue($obj, $value);
+                }
             }
-            $p = $reflectionObject->getProperty($key);
-            if (!$p->isProtected()) {
-                throw new SerializerException("Not a protected property: " . $key);
-            }
-            $p->setAccessible(true);
-            $p->setValue($obj, $value);
         }
-
     }
 }
