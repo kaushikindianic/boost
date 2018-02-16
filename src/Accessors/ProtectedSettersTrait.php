@@ -3,7 +3,6 @@
 namespace Boost\Accessors;
 
 use ReflectionObject;
-use Boost\Exception\NoSuchMethodException;
 
 trait ProtectedSettersTrait
 {
@@ -23,6 +22,6 @@ trait ProtectedSettersTrait
                 return $this;
             }
         }
-        throw new NoSuchMethodException($name);
+        trigger_error('Call to undefined method '.__CLASS__.'::'.$name.'()', E_USER_ERROR);
     }
 }
