@@ -6,21 +6,46 @@ use ReflectionObject;
 
 trait ProtectedGettersTrait
 {
-    public function __callGetters($name, $args)
+    public function __hasProtectedGetters($name, $args)
     {
-        if (substr($name, 0, 3) == 'get') {
-            $name = lcfirst(substr($name, 3));
-            
-            $vars = get_object_vars($this);
-            $reflectionObject = new ReflectionObject($this);
-            if ($reflectionObject->hasProperty($name)) {
-                $p = $reflectionObject->getProperty($name);
-                if ($p->isProtected()) {
-                    $p->setAccessible(true);
-                    return $p->getValue($this);
-                }
-            }
+        if (substr($name, 0, 3) != 'get') {
+            return false;
         }
-        trigger_error('Call to undefined method '.__CLASS__.'::'.$name.'()', E_USER_ERROR);
+
+        if (substr($name, 3, 1)!=strtoupper(substr($name, 3, 1))) {
+            return false;
+        }
+        $name = lcfirst(substr($name, 3));
+
+        $vars = get_object_vars($this);
+        $reflectionObject = new ReflectionObject($this);
+        if (!$reflectionObject->hasProperty($name)) {
+            return false;
+        }
+        $p = $reflectionObject->getProperty($name);
+        if (!$p->isProtected()) {
+            return false;
+        }
+        return true;
+    }
+
+    public function __callProtectedGetters($name, $args)
+    {
+        if (!$this->__hasProtectedGetters($name, $args)) {
+            trigger_error(
+                'Call to undefined method '.__CLASS__.'::'.$name.'()', E_USER_ERROR
+            );
+        }
+
+        $name = lcfirst(substr($name, 3));
+
+        $vars = get_object_vars($this);
+        $reflectionObject = new ReflectionObject($this);
+
+        $p = $reflectionObject->getProperty($name);
+        if ($p->isProtected()) {
+            $p->setAccessible(true);
+            return $p->getValue($this);
+        }
     }
 }

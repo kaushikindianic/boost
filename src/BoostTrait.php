@@ -14,14 +14,15 @@ trait BoostTrait
         foreach ($methods as $method) {
             $methodName = $method->getName();
             if ((substr($methodName, 0, 6)=='__call') && (strlen($methodName)>6)) {
-                try {
+                $hasMethodName = '__has' . substr($methodName, 6);
+                if ($this->$hasMethodName($name, $args)) {
                     $res = $this->$methodName($name, $args);
                     return $res;
-                } catch (NoSuchMethodException $e) {
-                    // nothing, try next method or fail
                 }
             }
         }
-        throw new NoSuchMethodException($name);
+        trigger_error(
+            'Call to undefined method '.__CLASS__.'::'.$name.'()', E_USER_ERROR
+        );
     }
 }
